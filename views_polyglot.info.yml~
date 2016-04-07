@@ -1,0 +1,5 @@
+name: views_polyglot
+type: module
+description: A language filter for Views that allows for items to be shown based on language priority
+core: 8.x
+package: Custom
