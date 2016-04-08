@@ -8,6 +8,7 @@
 namespace Drupal\views_polyglot\Plugin\views\field;
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
 use Drupal\views\Plugin\views\field\FieldPluginBase;
 use Drupal\views\ResultRow;
 
@@ -26,14 +27,7 @@ class PolyglotField extends FieldPluginBase {
    */
   protected function defineOptions() {
     $options = parent::defineOptions();
-/*
-    $options['use_php_setup'] = array('default' => FALSE);
-    $options['php_setup'] = array('default' => '');
-    $options['php_value'] = array('default' => '');
-    $options['php_output'] = array('default' => '');
-    $options['use_php_click_sortable'] = array('default' => self::CLICK_SORT_DISABLED);
-    $options['php_click_sortable'] = array('default' => FALSE);
-*/
+
     return $options;
   }
   public function adminLabel($short = FALSE) {
@@ -107,15 +101,22 @@ class PolyglotField extends FieldPluginBase {
    * {@inheritdoc}
    */
   public function render(ResultRow $values) {
-    $translation_langs = $values->_entity->getTranslationLanguages();
-    //dpm($translation_langs);
-    $output = '';
+    $translation_langs = $values->_entity->getTranslationLanguages(); //Available translation languages of this node
+    $nid = $values -> _entity->id(); //node id
+    $output = array();  // a list of links
     foreach ($translation_langs as $id => $obj) {
       $lang_code = $obj -> getId();
       $lang_name = $obj -> getName();
-      $output = $output . '|' . $lang_code . ':' . $lang_name;
+      $options = array(
+                   'language' => $obj,
+                 );
+
+      $url_to_lang = \Drupal\Core\Url::fromRoute('entity.node.canonical', ['node' => $nid], $options);
+
+      $link = Link::fromTextAndUrl($lang_name, $url_to_lang);
+      $output[] = $link->toRenderable();  //attach to the render array
     }
-    return $output;//implode($translation_langs);
+    return $output;
   }
 
   /**
@@ -128,42 +129,6 @@ class PolyglotField extends FieldPluginBase {
     $this->view->polyglot = TRUE;
   }
 
-  /**
-   *
-   * @see views_polyglot_views_pre_execute()
-   * @see self::php_post_execute()
-   */
-  public function polyglotPreExecute() {
-    // Execute static PHP code.
-    
-  }
-
-  /**
-   *
-   * @see views_polyglot_views_post_execute()
-   */
-  public function polyglotPostExecute(&$values) {
-    // Execute value PHP code.
-    /*if (!empty($this->options['php_value'])) {
-      $function = create_function('$view, $handler, &$static, $row', $this->options['php_value'] . ';');
-      ob_start();
-      foreach ($this->view->result as $i => &$row) {
-        $normalized_row = new ViewsPhpNormalizedRow();
-        foreach ($this->view->display_handler->getHandlers('field') as $field => $handler) {
-          // Do not add our own field. Also, do not add other fields that have no data yet. This occurs because
-          // the value code is evaluated in hook_views_post_execute(), but field data is made available in hook_views_pre_render(),
-          // which is called after hook_views_post_execute().
-          if ((empty($handler->aliases) || empty($handler->aliases['entity_type'])) && $handler->field_alias != $this->field_alias) {
-            $normalized_row->$field = isset($row->{$handler->field_alias}) ? $row->{$handler->field_alias} : NULL;
-          }
-        }
-        $row->{$this->field_alias} = $function($this->view, $this, $this->php_static_variable, $normalized_row);
-      }
-      ob_end_clean();
-    }
-*/
-
-  }
 
 }
 
