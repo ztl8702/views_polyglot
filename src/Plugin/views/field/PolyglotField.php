@@ -36,7 +36,9 @@ class PolyglotField extends FieldPluginBase {
 */
     return $options;
   }
-
+  public function adminLabel($short = FALSE) {
+    return t('Polyglot Field');
+  }
   /**
    * {@inheritdoc}
    */
@@ -105,8 +107,15 @@ class PolyglotField extends FieldPluginBase {
    * {@inheritdoc}
    */
   public function render(ResultRow $values) {
-    dpm($values);
-    return NULL;
+    $translation_langs = $values->_entity->getTranslationLanguages();
+    //dpm($translation_langs);
+    $output = '';
+    foreach ($translation_langs as $id => $obj) {
+      $lang_code = $obj -> getId();
+      $lang_name = $obj -> getName();
+      $output = $output . '|' . $lang_code . ':' . $lang_name;
+    }
+    return $output;//implode($translation_langs);
   }
 
   /**
