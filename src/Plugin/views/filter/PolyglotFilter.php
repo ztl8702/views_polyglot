@@ -42,6 +42,7 @@ class PolyglotFilter extends FilterPluginBase {
   function canExpose() {
     return FALSE;
   }
+  
   function adminSummary() {
     return t("Polyglot");
   }
@@ -83,10 +84,7 @@ class PolyglotFilter extends FilterPluginBase {
     
   }
    protected $languagePriority;
-   /**
-   *
-   * @see views_polyglot_views_post_execute()
-   */
+
 
   function getPriorityLangcode($avail_langs) {
     $this->languagePriority = ['en', 'zh-hans','cdo'];  //TODO Change this to an option
@@ -97,13 +95,16 @@ class PolyglotFilter extends FilterPluginBase {
     return NULL;
   }
   
+   /**
+   *
+   * @see views_polyglot_views_post_execute()
+   */  
   function polyglotPostExecute() {
     dpm('poe');
     foreach ($this->view->result as $i => $result) {
       dpm($i);
       $translation_langs = $result->_entity->getTranslationLanguages();
 	  $row_lang = $result->langcode;
-      //dpm($);	
       $lang_to_display=$this->getPriorityLangcode($translation_langs);
 	  dpm($lang_to_display);
 
