@@ -39,7 +39,8 @@ function views_polyglot_views_pre_render(ViewExecutable $view) {
     if ($item_per_page > 0) {
       $offset = $view->pager->getCurrentPage() * $item_per_page + $view->pager->getOffset();
       dpm('pre_render' . $offset . '+' .$item_per_page);
-      $view->result = array_slice($view->result, $offset, $item_per_page, false);
+      $view->result = array_slice($view->result, $offset, $item_per_page, true);
+
       dpm($view->result);
     }
   }

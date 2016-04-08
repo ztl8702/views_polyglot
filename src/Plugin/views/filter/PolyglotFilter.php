@@ -70,7 +70,7 @@ class PolyglotFilter extends FilterPluginBase {
     // In order to get the translation language of each row, we need
     // to add the language code of the entity to the query. Skip if the site
     // is not multilingual or the entity is not translatable. 
-	// This part is adapted from the query() function in TranslatationRenderPlugin
+    // This part is adapted from the query() function in TranslatationRenderPlugin
     if (!\Drupal::languageManager()->isMultilingual() || !\Drupal::entityTypeManager()->getDefinition('node')->hasKey('langcode')) {
       return;
     }
@@ -104,12 +104,13 @@ class PolyglotFilter extends FilterPluginBase {
     foreach ($this->view->result as $i => $result) {
       dpm($i);
       $translation_langs = $result->_entity->getTranslationLanguages();
-	  $row_lang = $result->langcode;
+      $row_lang = $result->langcode;
       $lang_to_display=$this->getPriorityLangcode($translation_langs);
-	  dpm($lang_to_display);
+      dpm($lang_to_display);
 
       if ($row_lang != 'und' && $row_lang != $lang_to_display) {
-        unset($this->view->result[$i]); dpm('unset'.$i);
+        unset($this->view->result[$i]); 
+        dpm('unset'.$i);
       }
     }
 
