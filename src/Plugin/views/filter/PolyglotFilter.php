@@ -100,17 +100,16 @@ class PolyglotFilter extends FilterPluginBase {
    * @see views_polyglot_views_post_execute()
    */  
   function polyglotPostExecute() {
-    dpm('poe');
     foreach ($this->view->result as $i => $result) {
-      dpm($i);
+      //dpm($i);
       $translation_langs = $result->_entity->getTranslationLanguages();
       $row_lang = $result->langcode;
       $lang_to_display=$this->getPriorityLangcode($translation_langs);
-      dpm($lang_to_display);
+//      dpm($lang_to_display);
 
       if ($row_lang != 'und' && $row_lang != $lang_to_display) {
         unset($this->view->result[$i]); 
-        dpm('unset'.$i);
+//        dpm('unset'.$i);
       }
     }
 

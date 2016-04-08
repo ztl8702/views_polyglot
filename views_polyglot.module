@@ -5,20 +5,19 @@ use Drupal\views\ViewExecutable;
 function views_polyglot_views_post_execute(ViewExecutable $view) {
   if (isset($view->polyglot) && $view->polyglot == TRUE) {
     //Call each polyglot filter
-	foreach ($view->filter as $id=>$handler) {
+    foreach ($view->filter as $id=>$handler) {
       if (is_callable(array($handler, 'polyglotPostExecute'))) {
         $handler->polyglotPostExecute();				
       }
     }
 	
-	//Call each polyglot field
-	foreach ($view->field as $id=>$handler) {
+    //Call each polyglot field
+    foreach ($view->field as $id=>$handler) {
       if (is_callable(array($handler, 'polyglotPostExecute'))) {
         $handler->polyglotPostExecute();				
       }
     }
-	
-	
+
   }
 }
 
@@ -29,7 +28,6 @@ function views_polyglot_views_pre_execute(ViewExecutable $view) {
    */
    
   if (isset($view->polyglot) && $view->polyglot == TRUE) {
-    dpm('pre_exe');
     $view->query->setLimit(0);
     $view->query->setOffset(0);	
   }
@@ -48,10 +46,7 @@ function views_polyglot_views_pre_render(ViewExecutable $view) {
     $item_per_page = $view->pager->getItemsPerPage();
     if ($item_per_page > 0) {
       $offset = $view->pager->getCurrentPage() * $item_per_page + $view->pager->getOffset();
-      dpm('pre_render' . $offset . '+' .$item_per_page);
       $view->result = array_slice($view->result, $offset, $item_per_page, true);
-
-      dpm($view->result);
     }
   }
 }

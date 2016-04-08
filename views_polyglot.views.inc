@@ -30,7 +30,7 @@ function views_polyglot_views_data() {
     'filter' => array(
       'id' => 'polyglot_filter',
     ),
-    'field' = > array(
+    'field' => array(
       'id' => 'polyglot_field',
     ),
   );
