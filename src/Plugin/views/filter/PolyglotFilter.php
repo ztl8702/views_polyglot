@@ -61,22 +61,22 @@ class PolyglotFilter extends FilterPluginBase {
    * {@inheritdoc}
    */
   public function query() {
-//inform views_polyglot_views_post_execute to seize control
+    //inform views_polyglot_views_post_execute to seize control
     $this->view->polyglot = TRUE; 
 
 
-    // In order to render in the translation language of the entity, we need
+    // In order to get the translation language of each row, we need
     // to add the language code of the entity to the query. Skip if the site
-    // is not multilingual or the entity is not translatable.
-if (!\Drupal::languageManager()->isMultilingual() || !\Drupal::entityTypeManager()->getDefinition('node')->hasKey('langcode')) {
+    // is not multilingual or the entity is not translatable. 
+	// This part is adapted from the query() function in TranslatationRenderPlugin
+    if (!\Drupal::languageManager()->isMultilingual() || !\Drupal::entityTypeManager()->getDefinition('node')->hasKey('langcode')) {
       return;
     }
     $langcode_key = \Drupal::entityTypeManager()->getDefinition('node')->getKey('langcode');
-    $storage = \Drupal::entityManager()->getStorage('node');//$this->entityType->id()
+    $storage = \Drupal::entityManager()->getStorage('node');
 
     if ($table = $storage->getTableMapping()->getFieldTableName($langcode_key)) {
-      $table_alias = $this->ensureMyTable();//ensureTable($table, NULL);
-      //dpm($table_alias);
+      $table_alias = $this->ensureMyTable();
       $this->langcodeAlias = $this->query->addField($table_alias, $langcode_key);
     }
     
@@ -88,32 +88,28 @@ if (!\Drupal::languageManager()->isMultilingual() || !\Drupal::entityTypeManager
    */
 
   function getPriorityLangcode($avail_langs) {
-    foreach ($this->languagePriority as $i => $code) {
+    $this->languagePriority = ['en', 'zh-hans','cdo'];  //TODO Change this to an option
+	foreach ($this->languagePriority as $i => $code) {
     	if (isset($avail_langs[$code])) 
 		return $code;
     }
     return NULL;
   }
+  
   function polyglotPostExecute() {
-    $this->languagePriority = ['en', 'zh-hans','cdo'];
-    if (/*!empty($this->options['polyglot_filter'])*/TRUE) {
-      //$function = create_function('$view, $handler, &$static, $row, $data', $this->options['php_filter'] . ';');
-      //ob_start(); 
+    dpm('poe');
+    foreach ($this->view->result as $i => $result) {
+      dpm($i);
+      $translation_langs = $result->_entity->getTranslationLanguages();
+	  $row_lang = $result->langcode;
+      //dpm($);	
+      $lang_to_display=$this->getPriorityLangcode($translation_langs);
+	  dpm($lang_to_display);
 
-      dpm('poe');
-      foreach ($this->view->result as $i => $result) {
-        dpm($i);
-        $translation_langs = $result->_entity->getTranslationLanguages();
-	$row_lang = $result->langcode;
-//dpm($);	
-        $lang_to_display=$this->getPriorityLangcode($translation_langs);
-	dpm($lang_to_display);
-
-        if ($row_lang != 'und' && $row_lang != $lang_to_display) {
-          unset($this->view->result[$i]); dpm('unset'.$i);
-        }
+      if ($row_lang != 'und' && $row_lang != $lang_to_display) {
+        unset($this->view->result[$i]); dpm('unset'.$i);
       }
-      //ob_end_clean();
     }
+
   } 
 }
