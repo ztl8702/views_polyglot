@@ -10,10 +10,11 @@ namespace Drupal\views_polyglot\Plugin\views\filter;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\views\Plugin\views\filter\FilterPluginBase;
-//use Drupal\Core\Language;
+
 
 /**
- * Provides filtering by language.
+ * Provides filtering by a sequence of language priority. 
+ * Ensures that only one language version is shown.
  *
  * @ingroup views_filter_handlers
  *
