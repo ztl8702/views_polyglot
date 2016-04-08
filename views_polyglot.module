@@ -3,7 +3,7 @@
 use Drupal\views\ViewExecutable;
 
 function views_polyglot_views_post_execute(ViewExecutable $view) {
-  if ($view->polyglot) {
+  if (isset($view->polyglot) && $view->polyglot == TRUE) {
     foreach ($view->filter as $id=>$handler) {
       if (is_callable(array($handler, 'polyglotPostExecute'))) {
         $handler->polyglotPostExecute();				
@@ -18,7 +18,7 @@ function views_polyglot_views_pre_execute(ViewExecutable $view) {
    * This part is adapted from Views PHP module.
    */
    
-  if ($view->polyglot) {
+  if (isset($view->polyglot) && $view->polyglot == TRUE) {
     dpm('pre_exe');
     $view->query->setLimit(0);
     $view->query->setOffset(0);	
@@ -30,16 +30,16 @@ function views_polyglot_views_pre_render(ViewExecutable $view) {
   /* We need to rebuild the pager and offset value after we unset some result rows.
    * This part is adapted from Views PHP module. 
    */
-  if ($view->polyglot) {
+  if (isset($view->polyglot) && $view->polyglot == TRUE) {
     
-	$view->pager->total_items = count($view->result);
+    $view->pager->total_items = count($view->result);
     $view->pager->updatePageInfo();	
     
-	$item_per_page = $view->pager->getItemsPerPage();
+    $item_per_page = $view->pager->getItemsPerPage();
     if ($item_per_page > 0) {
       $offset = $view->pager->getCurrentPage() * $item_per_page + $view->pager->getOffset();
       dpm('pre_render' . $offset . '+' .$item_per_page);
-	  $view->result = array_slice($view->result, $offset, $item_per_page, false);
+      $view->result = array_slice($view->result, $offset, $item_per_page, false);
       dpm($view->result);
     }
   }
