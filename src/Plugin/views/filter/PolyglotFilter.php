@@ -29,6 +29,7 @@ class PolyglotFilter extends FilterPluginBase {
    */
   protected $languageManager;
 
+  protected $languagePriority = ['en', 'zh-hans','cdo']; //TODO: Change this to an option
   protected $langcodeAlias;
   /**
    * {@inheritdoc}
@@ -83,11 +84,10 @@ class PolyglotFilter extends FilterPluginBase {
     }
     
   }
-   protected $languagePriority;
+
 
 
   function getPriorityLangcode($avail_langs) {
-    $this->languagePriority = ['en', 'zh-hans','cdo'];  //TODO Change this to an option
 	foreach ($this->languagePriority as $i => $code) {
     	if (isset($avail_langs[$code])) 
 		return $code;

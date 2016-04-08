@@ -18,20 +18,22 @@ use Drupal\system\ActionConfigEntityInterface;
 */
 function views_polyglot_views_data() {
 
-    $data['views']['table']['group'] = t('Custom Global');
-    $data['views']['table']['join'] = array(
-      // #global is a special flag which allows a table to appear all the time.
-      '#global' => array(),
-    );
+  $data['views']['table']['group'] = t('Custom Global');
+  $data['views']['table']['join'] = array(
+    // #global is a special flag which allows a table to appear all the time.
+    '#global' => array(),
+  );
 
+  $data['views']['polyglot'] = array(
+    'title' => t('Polyglot'),
+    'help' => t('Advance language filter'),
+    'filter' => array(
+      'id' => 'polyglot_filter',
+    ),
+    'field' = > array(
+      'id' => 'polyglot_field',
+    ),
+  );
 
-    $data['views']['polyglot_filter'] = array(
-        'title' => t('Polyglot'),
-        'help' => t('Advance language filter'),
-        'filter' => array(
-            'id' => 'polyglot_filter',
-        ),
-    );
-
-    return $data;
+  return $data;
 }

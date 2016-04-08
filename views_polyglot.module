@@ -4,11 +4,21 @@ use Drupal\views\ViewExecutable;
 
 function views_polyglot_views_post_execute(ViewExecutable $view) {
   if (isset($view->polyglot) && $view->polyglot == TRUE) {
-    foreach ($view->filter as $id=>$handler) {
+    //Call each polyglot filter
+	foreach ($view->filter as $id=>$handler) {
       if (is_callable(array($handler, 'polyglotPostExecute'))) {
         $handler->polyglotPostExecute();				
       }
     }
+	
+	//Call each polyglot field
+	foreach ($view->field as $id=>$handler) {
+      if (is_callable(array($handler, 'polyglotPostExecute'))) {
+        $handler->polyglotPostExecute();				
+      }
+    }
+	
+	
   }
 }
 
