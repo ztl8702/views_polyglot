@@ -101,21 +101,34 @@ class PolyglotField extends FieldPluginBase {
    * {@inheritdoc}
    */
   public function render(ResultRow $values) {
-    $translation_langs = $values->_entity->getTranslationLanguages(); //Available translation languages of this node
-    $nid = $values -> _entity->id(); //node id
-    $output = array();  // a list of links
+    $translation_langs = $values->_entity->getTranslationLanguages(); // Available translation languages of this node
+    $nid = $values -> _entity->id(); // node id
+    $links = array();  // A list of links, prepared for the 'links' theme hook
     foreach ($translation_langs as $id => $obj) {
       $lang_code = $obj -> getId();
       $lang_name = $obj -> getName();
-      $options = array(
-                   'language' => $obj,
-                 );
 
-      $url_to_lang = \Drupal\Core\Url::fromRoute('entity.node.canonical', ['node' => $nid], $options);
+      $url_to_lang = \Drupal\Core\Url::fromRoute('entity.node.canonical', ['node' => $nid], ['language' => $obj]); // The Url object pointing to the specific translation
 
-      $link = Link::fromTextAndUrl($lang_name, $url_to_lang);
-      $output[] = $link->toRenderable();  //attach to the render array
+      $links[] = Array(
+          'title' => $lang_name,
+          'url' => $url_to_lang,
+          'attributes' => Array(
+              'class' => ['polyglot_field_item'],
+          ),
+      );
     }
+
+    // Render language links as a list.
+    // See template_preprocess_links() for more info.
+    $attributes = Array (
+        'class' => ['polyglot_field'],
+    );
+    $output = Array (
+        '#theme' => 'links',
+        '#links' => $links,
+        '#attributes' => $attributes,
+    );
     return $output;
   }
 
